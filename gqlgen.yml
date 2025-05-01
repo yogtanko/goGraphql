@@ -1,18 +1,18 @@
 # Where are all the schema files located? globs are supported eg  src/**/*.graphqls
 schema:
-  - graph/schema/*.graphqls
+  - graph/*.graphqls
 
 # Where should the generated server code go?
 exec:
   package: graph
-  layout: follow-schema # Only other option is "follow-schema," ie multi-file.
+  layout: single-file # Only other option is "follow-schema," ie multi-file.
 
   # Only for single-file layout:
-  # filename: graph/generated.go
+  filename: graph/generated.go
 
   # Only for follow-schema layout:
-  dir: graph/generated
-  filename_template: "{name}.generated.go"
+  # dir: graph
+  # filename_template: "{name}.generated.go"
 
   # Optional: Maximum number of goroutines in concurrency to use per child resolvers(default: unlimited)
   # worker_limit: 1000
@@ -121,7 +121,7 @@ call_argument_directives_with_null: true
 # gqlgen will search for any type names in the schema in these go packages
 # if they match it will use them, otherwise it will generate them.
 autobind:
- - "github.com/yogtanko/goGraphql/graph/model"
+#  - "github.com/yogtanko/goGraphql/graph/model"
 
 # This section declares type mapping between the GraphQL and go type systems
 #
@@ -157,6 +157,3 @@ models:
     model:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
-  User:
-    model:
-      - github.com/yogtanko/goGraphql/graph/model.User
