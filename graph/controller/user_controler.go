@@ -40,7 +40,7 @@ func CreateUser(input model.NewUser) (*model.User, error) {
 		return nil, err
 	}
 	defer db.Close()
-	query, err := db.Prepare("INSERT INTO users (name, address) VALUES (?, ?)")
+	query, err := db.Prepare("INSERT INTO Users (name, address) VALUES (?, ?)")
 	if err != nil {
 		log.Fatalf("Error preparing query %v", err)
 		return nil, err
