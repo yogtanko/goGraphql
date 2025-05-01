@@ -7,7 +7,6 @@ import (
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/joho/godotenv"
 	"github.com/yogtanko/goGraphql/graph/model"
 )
 
@@ -20,11 +19,11 @@ func GetAllUser() ([]*model.User, error) {
 }
 
 func CreateUser(input model.NewUser) (*model.User, error) {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file %v", err)
-		return nil, err
-	}
+	// err := godotenv.Load(".env")
+	// if err != nil {
+	// 	log.Fatalf("Error loading .env file %v", err)
+	// 	return nil, err
+	// }
 
 	MYSQL_USERNAME := os.Getenv("MYSQL_USERNAME")
 	MYSQL_PASSWORD := os.Getenv("MYSQL_PASSWORD")
