@@ -2,5 +2,12 @@
 
 package model
 
+type Mutation struct {
+}
+
+type NewUser struct {
+	Name string `json:"name"`
+}
+
 type Query struct {
 }
