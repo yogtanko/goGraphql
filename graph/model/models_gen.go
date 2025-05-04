@@ -2,19 +2,119 @@
 
 package model
 
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type AddVariable struct {
+	Name        string           `json:"Name"`
+	Type        string           `json:"Type"`
+	Description string           `json:"Description"`
+	Position    string           `json:"Position"`
+	StartDate   string           `json:"StartDate"`
+	Formula     []*VariableToken `json:"Formula"`
+}
+
 type Mutation struct {
 }
 
 type NewUser struct {
-	Name    string `json:"name"`
-	Address string `json:"address"`
+	Name     string `json:"name"`
+	Address  string `json:"address"`
+	Position string `json:"position"`
 }
 
 type Query struct {
 }
 
 type User struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Address string `json:"address"`
+	ID       string  `json:"id"`
+	Name     string  `json:"name"`
+	Address  string  `json:"address"`
+	Position *string `json:"position,omitempty"`
+}
+
+type Variable struct {
+	ID          string `json:"Id"`
+	Name        string `json:"Name"`
+	Type        string `json:"Type"`
+	Description string `json:"Description"`
+	Position    string `json:"Position"`
+	StartDate   string `json:"StartDate"`
+	EndDate     string `json:"EndDate"`
+}
+
+type VariableToken struct {
+	Token     string        `json:"Token"`
+	TokenType TokenTypeEnum `json:"TokenType"`
+}
+
+type TokenTypeEnum string
+
+const (
+	TokenTypeEnumQuery            TokenTypeEnum = "QUERY"
+	TokenTypeEnumNumber           TokenTypeEnum = "NUMBER"
+	TokenTypeEnumOperator         TokenTypeEnum = "OPERATOR"
+	TokenTypeEnumLeftparentheses  TokenTypeEnum = "LEFTPARENTHESES"
+	TokenTypeEnumRightparentheses TokenTypeEnum = "RIGHTPARENTHESES"
+	TokenTypeEnumFunction         TokenTypeEnum = "FUNCTION"
+	TokenTypeEnumSemicolon        TokenTypeEnum = "SEMICOLON"
+	TokenTypeEnumVariable         TokenTypeEnum = "VARIABLE"
+)
+
+var AllTokenTypeEnum = []TokenTypeEnum{
+	TokenTypeEnumQuery,
+	TokenTypeEnumNumber,
+	TokenTypeEnumOperator,
+	TokenTypeEnumLeftparentheses,
+	TokenTypeEnumRightparentheses,
+	TokenTypeEnumFunction,
+	TokenTypeEnumSemicolon,
+	TokenTypeEnumVariable,
+}
+
+func (e TokenTypeEnum) IsValid() bool {
+	switch e {
+	case TokenTypeEnumQuery, TokenTypeEnumNumber, TokenTypeEnumOperator, TokenTypeEnumLeftparentheses, TokenTypeEnumRightparentheses, TokenTypeEnumFunction, TokenTypeEnumSemicolon, TokenTypeEnumVariable:
+		return true
+	}
+	return false
+}
+
+func (e TokenTypeEnum) String() string {
+	return string(e)
+}
+
+func (e *TokenTypeEnum) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = TokenTypeEnum(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid TokenTypeEnum", str)
+	}
+	return nil
+}
+
+func (e TokenTypeEnum) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *TokenTypeEnum) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e TokenTypeEnum) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }

@@ -1,0 +1,62 @@
+# go run github.com/99designs/gqlgen generate
+
+scalar DateTime
+
+enum TokenTypeEnum{
+  QUERY
+  NUMBER
+  OPERATOR
+  LEFTPARENTHESES
+  RIGHTPARENTHESES
+  FUNCTION
+  SEMICOLON
+  VARIABLE
+}
+
+type Mutation {
+  addVariable(input: AddVariable!): Variable!
+  updateVariable(input: AddVariable!): Variable!
+  createUser(input: NewUser!): User!
+}
+
+type Query {
+  Variables: [Variable!]
+  users: [User!]!
+}
+
+type User {
+  id: ID!
+  name: String!
+  address: String!
+  position: String
+}
+
+input NewUser {
+  name: String!
+  address: String!
+  position: String!
+}
+
+type Variable {
+    Id: ID!
+    Name: String!
+    Type: String!
+    Description: String!
+    Position: String!
+    StartDate: DateTime!
+    EndDate: DateTime!
+}
+
+input VariableToken {
+  Token: String!
+  TokenType: TokenTypeEnum!
+}
+
+input AddVariable {
+  Name: String!
+  Type: String!
+  Description: String!
+  Position: String!
+  StartDate: DateTime!
+  Formula: [VariableToken!]!
+}

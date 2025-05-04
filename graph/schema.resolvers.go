@@ -7,18 +7,32 @@ package graph
 import (
 	"context"
 
-	user_controller "github.com/yogtanko/goGraphql/graph/controller"
 	"github.com/yogtanko/goGraphql/graph/model"
 )
 
+// AddVariable is the resolver for the addVariable field.
+func (r *mutationResolver) AddVariable(ctx context.Context, input model.AddVariable) (*model.Variable, error) {
+	return r.VariableController.AddVariable(&input)
+}
+
+// UpdateVariable is the resolver for the updateVariable field.
+func (r *mutationResolver) UpdateVariable(ctx context.Context, input model.AddVariable) (*model.Variable, error) {
+	return r.VariableController.UpdateVariable(&input)
+}
+
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	return user_controller.CreateUser(input)
+	return r.UserController.CreateUser(&input)
+}
+
+// Variables is the resolver for the Variables field.
+func (r *queryResolver) Variables(ctx context.Context) ([]*model.Variable, error) {
+	return r.VariableController.GetAllVariable()
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context) ([]*model.User, error) {
-	return user_controller.GetAllUser()
+	return r.UserController.GetAllUser()
 }
 
 // Mutation returns MutationResolver implementation.
